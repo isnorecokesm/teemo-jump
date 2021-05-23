@@ -446,7 +446,7 @@ function init() {
       player.isDead = "lol";
 
       var tweet = document.getElementById("tweetBtn");
-      tweet.href='http://twitter.com/share?url=I just scored ' +score+ ' points in the Teemo Jump! game! Created by @geldregen__! Think you can beat my score? Play it on: www.example.com !';
+      tweet.href='http://twitter.com/share?url=I just scored ' +score+ ' points in the Teemo Jump! game! Created by @geldregen__! Think you can beat my score? Play it on: https://geldregen.itch.io/teemo-jump or www.teemojump.tk !';
     
     }
   }
