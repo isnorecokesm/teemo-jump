@@ -1,0 +1,52 @@
+<!doctype html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Teemo Jump!</title>
+    <link rel="stylesheet" href="style.css">
+
+    <script src="/assets/js/prefixfree.min.js"></script>
+  </head>
+  <body>
+    <p> (Disclaimer)
+"Teemo Jump!" isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc. THIS IS FAN MADE - NON PROFIT GAME MADE JUST FOR ENTERTAINMENT AND FUN!</p>
+    <div class="container">
+
+      <canvas id="canvas">
+        Your browser doesn't support HTML5!
+      </canvas>
+
+      <div id="mainMenu">
+        <h1>Teemo Jump!</h1>
+        <h3>by: <a href="https://twitter.com/geldregen__/" target="_blank">Geldregen</a></h3>
+  			
+
+        <p class="info">
+          use
+          <span class="key left">←</span>
+          <span class="key right">→</span>
+          to move and space to (re) start!
+        </p>
+        <a class="button" href="javascript:init()">Play</a>
+      </div>
+
+      <div id="gameOverMenu">
+        <h1>Teemo Died!</h1>
+        <h3 id="go_score">You had 0 points!</h3>
+
+        <a class="button" href="javascript:reset()">Again?</a>
+        <a id="tweetBtn" target="_blank" class="button tweet" href="#">Tweet?</a>
+
+
+      <!-- Preloading image ;) -->
+      <img id="sprite" src="https://i.ibb.co/jGRW2wM/all.png"/>
+
+      <div id="scoreBoard">
+        <p id="score">1</p>
+      </div>
+
+    </div>
+
+    <script src="main.js"></script>
+  </body>
+</html>
