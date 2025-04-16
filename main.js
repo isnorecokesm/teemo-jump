@@ -15,6 +15,14 @@ var width = 422,
 canvas.width = width;
 canvas.height = height;
 
+// FPS control - START
+var fps = 60;
+var now;
+var then = Date.now();
+var interval = 1000/fps;
+var delta;
+// FPS control - END
+
 //Variables for game
 var platforms = [],
   image = document.getElementById("sprite"),
@@ -25,6 +33,10 @@ var platforms = [],
   flag = 0,
   menuloop, broken = 0,
   dir, score = 0, firstRun = true;
+
+// Add this variable for particle system
+var wasInAir = false;
+var lastPlatformY = 0;
 
 //Base object
 var Base = function() {
@@ -218,6 +230,70 @@ var spring = function() {
 
 var Spring = new spring();
 
+// Simplified Particle System
+var ParticleSystem = function() {
+  this.particles = [];
+  this.maxParticles = 7; // Reduced number of particles
+  
+  this.createParticles = function(x, y) {
+    // Create particles exactly at Teemo's feet
+    for (var i = 0; i < this.maxParticles; i++) {
+      var footPosition = x + player.width/2 - 5 + Math.random() * 10; // Concentrate at feet
+      
+      // Light gray color variations
+      var grayShade = Math.floor(Math.random() * 40) + 215; // 215-255 range (light gray)
+      var grayColor = 'rgb(' + grayShade + ',' + grayShade + ',' + grayShade + ')';
+      
+      this.particles.push({
+        x: footPosition,
+        y: y + player.height, // At the bottom of Teemo
+        vx: Math.random() * 2 - 1, // Less horizontal movement
+        vy: -Math.random() * 2 - 1, // Less vertical movement
+        radius: Math.random() * 2 + 1, // Smaller particles
+        alpha: 1,
+        color: grayColor,
+        life: Math.random() * 15 + 5 // Shorter lifespan
+      });
+    }
+  };
+  
+  this.update = function() {
+    for (var i = 0; i < this.particles.length; i++) {
+      var p = this.particles[i];
+      
+      p.x += p.vx;
+      p.y += p.vy;
+      p.vy += 0.1; // Gravity effect
+      p.life--;
+      p.alpha -= 0.05; // Fade out faster
+      
+      // Remove dead particles
+      if (p.life <= 0 || p.alpha <= 0) {
+        this.particles.splice(i, 1);
+        i--;
+      }
+    }
+  };
+  
+  this.draw = function() {
+    ctx.save();
+    for (var i = 0; i < this.particles.length; i++) {
+      var p = this.particles[i];
+      
+      ctx.globalAlpha = p.alpha;
+      ctx.fillStyle = p.color;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2, true);
+      ctx.closePath();
+      ctx.fill();
+    }
+    ctx.restore();
+  };
+};
+
+// Create the particle system
+var particleSystem = new ParticleSystem();
+
 function init() {
   //Variables for the game
   var dir = "left",
@@ -296,11 +372,12 @@ function init() {
       player.vx = 8;
     else if(player.vx < -8)
       player.vx = -8;
-
-    //console.log(player.vx);
     
     //Jump the player when it hits the base
-    if ((player.y + player.height) > base.y && base.y < height) player.jump();
+    if ((player.y + player.height) > base.y && base.y < height) {
+      player.jump();
+      particleSystem.createParticles(player.x, player.y); // Create particles when jumping from base
+    }
 
     //Gameover if it hits the bottom 
     if (base.y > height && (player.y + player.height) > height && player.isDead != "lol") player.isDead = true;
@@ -409,8 +486,11 @@ function init() {
         } else if (p.type == 4 && p.state === 0) {
           player.jump();
           p.state = 1;
+          // Only create particles for non-vanishing platforms
         } else if (p.flag == 1) return;
         else {
+          // Create particles for this collision
+          particleSystem.createParticles(player.x, player.y);
           player.jump();
         }
       }
@@ -421,8 +501,8 @@ function init() {
     if (player.vy > 0 && (s.state === 0) && (player.x + 15 < s.x + s.width) && (player.x + player.width - 15 > s.x) && (player.y + player.height > s.y) && (player.y + player.height < s.y + s.height)) {
       s.state = 1;
       player.jumpHigh();
+      particleSystem.createParticles(player.x, player.y); // Create particles on spring bounce
     }
-
   }
 
   function updateScore() {
@@ -443,28 +523,33 @@ function init() {
     else if(player.y + player.height > height) {
       showGoMenu();
       hideScore();
-      player.isDead = "lol";
-
-      var tweet = document.getElementById("tweetBtn");
-      tweet.href='http://twitter.com/share?url=I just scored ' +score+ ' points in the Teemo Jump! game! Created by @geldregen__! Think you can beat my score? Play it on: https://geldregen.itch.io/teemo-jump or www.teemojump.tk !';
-    
+      player.isDead = "lol";      
     }
   }
 
   //Function to update everything
 
   function update() {
-    paintCanvas();
-    platformCalc();
-
-    springCalc();
-
-    playerCalc();
-    player.draw();
-
-    base.draw();
-
-    updateScore();
+    // FPS limiting - START
+    now = Date.now();
+    delta = now - then;
+     
+    if (delta > interval) {
+      then = now - (delta % interval);
+      
+      // Game update code
+      paintCanvas();
+      platformCalc();
+      springCalc();
+      playerCalc();
+      particleSystem.update(); // Update particles
+      
+      player.draw();
+      base.draw();
+      particleSystem.draw(); // Draw particles
+      updateScore();
+    }
+    // FPS limiting - END
   }
 
   menuLoop = function(){return;};
@@ -612,11 +697,24 @@ function playerJump() {
   else if (player.x < 0 - player.width) player.x = width;
 
   player.draw();
+  
 }
 
 function update() {
-  ctx.clearRect(0, 0, width, height);
-  playerJump();
+  // FPS limiting - START
+  now = Date.now();
+  delta = now - then;
+   
+  if (delta > interval) {
+    then = now - (delta % interval);
+    
+    // Game update code
+    ctx.clearRect(0, 0, width, height);
+    playerJump();
+    particleSystem.update(); // Update particles in menu loop too
+    particleSystem.draw(); // Draw particles in menu loop
+  }
+  // FPS limiting - END
 }   
 
 menuLoop = function() {

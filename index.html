@@ -6,13 +6,35 @@
     <link rel="stylesheet" href="style.css">
     <link rel="icon" href="https://i.ibb.co/7KmqM9X/icon.png">
     <script src="/assets/js/prefixfree.min.js"></script>
+     
+    <div style="
+    position: fixed;
+    top: 50%;
+    right: 150px;
+    transform: translateY(-50%);
+    border: 1px solid white; 
+    padding: 10px; 
+    color: white;
+    font-size: 14px; 
+    max-width: 400px;
+    background: transparent;
+  ">
+    <p><strong>Disclaimer:</strong><br>
+      "Teemo Jump!" isn't endorsed by Riot Games and doesn't reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc. 
+      <br><br>
+      <strong>THIS IS FAN MADE - NON PROFIT GAME MADE JUST FOR ENTERTAINMENT AND FUN!</strong>
+      <br><br>
+      Note: Game is in development and it will be updated frequently. You are running version: 2.0 April 2025 Build
+    </p> 
+    <a href="https://github.com/Geldregen/teemo-jump" style="color: lightblue;">source code</a><br>
+    <a href="https://geldregen.itch.io/teemo-jump" style="color: lightblue;">itch.io</a>
+    <a href="https://amazing-sprinkles-d3a78b.netlify.app/" style="color: lightblue;">devblog</a>
+  </div>
+  
   </head>
   <body>
-    <script data-ad-client="ca-pub-2525450493102522" async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js"></script>
-    <p> (Disclaimer)
-"Teemo Jump!" isn’t endorsed by Riot Games and doesn’t reflect the views or opinions of Riot Games or anyone officially involved in producing or managing League of Legends. League of Legends and Riot Games are trademarks or registered trademarks of Riot Games, Inc. League of Legends © Riot Games, Inc. THIS IS FAN MADE - NON PROFIT GAME MADE JUST FOR ENTERTAINMENT AND FUN! Note: Game is in development and it will be updated frequently. You are running version: 0.0.1 May 2021 Build</p> 
-    <a href="https://github.com/Geldregen/teemo-jump">GAME IS FREE AND OPEN SOURCE HERE!</a>
-    <a href="https://geldregen.itch.io/teemo-jump">GAME IS LIVE ON ITCH.IO!</a>
+    <div id="gameWrapper">
+      <div class="container">
     <div class="container">
 
       <canvas id="canvas">
@@ -21,9 +43,6 @@
 
       <div id="mainMenu">
         <h1>Teemo Jump!</h1>
-        <h3>by: <a href="https://twitter.com/geldregen__/" target="_blank">Geldregen</a></h3>
-  			
-
         <p class="info">
           use
           <span class="key left">←</span>
@@ -37,19 +56,18 @@
         <h1>Teemo Died!</h1>
         <h3 id="go_score">You had 0 points!</h3>
 
-        <a class="button" href="javascript:reset()">Again?</a>
-        <a id="tweetBtn" target="_blank" class="button tweet" href="#">Tweet?</a>
+        <a class="button" href="javascript:reset()">Retry</a>
+      </div>
 
-
-      <!-- Preloading image ;) -->
-      <img id="sprite" src="https://i.ibb.co/jGRW2wM/all.png"/>
+      <img id="sprite" src="https://i.ibb.co/931TbVx0/ER.png"/>
 
       <div id="scoreBoard">
-        <p id="score">1</p>
+        <p id="score">0</p>
       </div>
 
     </div>
-
+  </div>
     <script src="main.js"></script>
+  
   </body>
 </html>
